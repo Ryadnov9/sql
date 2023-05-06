@@ -1,0 +1,139 @@
+1. Створюємо нову таблицю: 
+
+CREATE TABLE book
+(number INT AUTO_INCREMENT PRIMARY KEY,
+ code INT,
+ new BOOLEAN NOT NULL DEFAULT 1,
+ title VARCHAR(255) NOT NULL,
+ price FLOAT(5) NOT NULL, 
+ edition_id INT NOT NULL,
+ pages INT NOT NULL,
+ format VARCHAR(255),
+ dateee DATE DEFAULT NULL,
+ circulation INT NOT NULL,
+ topic_id INT NOT NULL,
+ category_id INT NOT NULL
+)
+
+2. Скласти SQL-script, що виконує:
+  a. Створення таблиць бази даних. Команди для створення таблиці повинні містити головний ключ, обмеження 
+типу null / not null, default, check, створення зв'язків з умовами посилальної цілісності
+
+Створюємо таблиці які будемо зв'язувати: 
+
+CREATE TABLE  book_topic (
+     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     topic VARCHAR(250) 
+);
+
+CREATE TABLE  book_edition (
+     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     edition VARCHAR(250) 
+);
+
+CREATE TABLE  book_category(
+     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     category VARCHAR(250) 
+);
+
+3. Завантажуємо данні у таблиці:
+
+INSERT INTO book_category VALUES 
+(1,'Підручники'),
+(2,'Апаратні засоби ПК'),
+(3,'Захист і безпека ПК'),
+(4,'Інші кн	иги'),
+(5,'Windows 2000'),
+(6,'Unix'),
+(7,'Інші операційні системи'), 	
+(8,'C&C++'),
+(9,'SQL');
+
+INSERT INTO book_edition VALUES 
+(1,'Видавнича група BHV'),
+(2,'Вільямс'),
+(3,'МикроАрт'),
+(4,'DiaSoft'),
+(5,'ДМК'),
+(6,'Триумф'),
+(7,'Эком'),
+(8,'Києво-Могилянська академія'),
+(9,'Університет "Україна"'),
+(10,'Вінниця: ВДТУ');
+
+INSERT INTO book_topic VALUES 
+(1,'Використання ПК в цілому'),
+(2,'Операційні системи'),
+(3,'Програмування');
+
+INSERT INTO book(code, new, title, price,edition_id, pages, format, dateee, circulation, topic_id, category_id)
+VALUES
+(5110,'No', 'Апаратні засоби мультимедіа. Відеосистема РС', 15.51, 1,  400, '70х100/16', '2000-07-24', 5000, 1, 1),
+(4985,'No', 'Засвой самостійно модернізацію та ремонт ПК за 24 години, 2-ге вид.', 18.90, 2,  288, '70х100/16', '2000-07-07', 5000, 1, 1),
+(5141,'No', 'Структури даних та алгоритми',  37.80, 2,  384, '70х100/16', '2000-9-29',  5000, 1, 1),
+(5127,'No', 'Автоматизація інженерно-графічних робіт',11.58, 1,  256, '70х100/16', '2000-6-15',  5000, 1, 1),
+(5110,'No', 'Апаратні засоби мультимедіа. Відеосистема РС',15.51, 1,  400, '70х100/16', '2000-07-24', 5000, 1, 2),
+(5199,'No', 'Залізо IBM 2001',30.07, 3,  368, '70х100/16', '2000-12-02', 5000, 1, 2),
+(3851,'No', 'Захист інформації та безпека комп''ютерних систем',26.00, 4,  480, '84х108/16', NULL,         5000, 1, 3),
+(3932,'No', 'Як перетворити персональний комп''ютер на вимірювальний комплекс', 7.65,  5,  144, '60х88/16',  '1999-06-09', 5000, 1, 4),
+(4713,'No', 'Plug-ins. Додаткові програми для музичних програм',11.41, 5,  144, '70х100/16', '2000-02-22', 5000, 1, 4),
+(5217,'No', 'Windows МЕ. Найновіші версії програм',16.57, 6,  320, '70х100/16', '2000-08-25', 5000, 2, 5),
+(4829,'No', 'Windows 2000 Professional крок за кроком з CD", 27.25, 7,  320, '70х100/16', '2000-04-28', 5000, 2, 5),
+(5170,'No', 'Linux версії', 24.43, 5,  346, '70х100/16', '2000-09-29', 5000, 2, 6),
+(860, 'No', 'Операційна система UNIX',3.50,  1,  395, '84х100\\16','1997-05-05', 5000, 2, 7),
+(44,  'No', 'Відповіді на актуальні запитання щодо OS/2 Warp', 5.00,  4,  352, '60х84/16',  '1996-03-20', 5000, 2, 8),
+(5176,'No', 'Windows Ме. Супутник користувача',12.79, 1,  306, '',          '2000-10-10', 5000, 2, 8),
+(5462,'No', 'Мова програмування С++. Лекції та вправи', 29.00, 4,  656, '84х108/16', '2000-12-12', 5000, 3, 9),
+(4982,'No', 'Мова програмування С. Лекції та вправи',29.00, 4,  432, '84х108/16', '2000-07-12', 5000, 3, 9),
+(4687,'No', 'Ефективне використання C++ .50 рекомендацій щодо покращення ваших програм та проектів',17.60, 5,  240, '70х100/16', '2000-02-03', 5000, 3, 9),
+(235, 'No', 'Інформаційні системи і структури даних', NULL,  8,  288, '60х90/16',  NULL,         400,  1, 4),
+(8746,'Yes','Бази даних в інформаційних системах', NULL,  9,  418, '60х84/16',  '2018-25-07', 100,  3, 9),
+(2154,'Yes','Сервер на основі операційної системи FreeBSD 6.1',14.5,     9,  216, '60х84/16',  '2015-03-11', 500,  3, 8),
+(2662,'No', 'Організація баз даних та знань', 0,     10, 208, '60х90/16',  '2001-10-10', 1000, 3, 9),
+(5641,'Yes','Організація баз даних та знань', 0,     1,  384, '70х100/16', '2021-15-12', 5000, 3, 9);
+
+4. Зв'язуємо таблиці 
+ALTER TABLE `book` ADD FOREIGN KEY (`edition_id`) REFERENCES `book_edition`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `book` ADD FOREIGN KEY (`caterody_id`) REFERENCES `book_category`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `book` ADD FOREIGN KEY (`topic_id`) REFERENCES `book_topic`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+	
+5. Створити і перевірити представлення для отримання універсального відношення з набору нормалізованих таблиць 
+бази даних.
+
+SELECT book.Title, book_category.Category
+FROM book
+INNER JOIN book_category ON book.category_id=book_category.id;
+
+SELECT book.Title, book_edition.edition 
+FROM book 
+INNER JOIN book_edition ON book.edition_id = book_edition.id;
+
+
+SELECT book.Title, book_topic.topic 
+FROM book 
+INNER JOIN book_topic ON book.topic_id = book_topic.id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
