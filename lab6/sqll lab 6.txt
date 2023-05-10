@@ -1,0 +1,188 @@
+1.Вивести значення наступних колонок: назва книги, ціна, назва видавництва. Використовувати внутрішнє з'єднання, застосовуючи where.
+
+SELECT
+    book.title,
+    book.price,
+    book_edition.edition 
+FROM
+    book,
+    book_edition
+WHERE
+    book.edition_id = book_edition.id;
+
+2.Вивести значення наступних колонок: назва книги, назва категорії. Використовувати внутрішнє з'єднання, застосовуючи inner joi
+
+SELECT
+   book.title,
+   book_category.category 
+FROM book
+INNER JOIN book_category ON book.category_id = book_category.id;
+
+3.Вивести значення наступних колонок: назва книги, ціна, назва видавництва, формат
+SELECT
+    book.title,
+    book.price,
+    book_edition.edition,
+    book.format 
+FROM
+    book
+JOIN book_edition ON book.edition_id = book_edition.id;
+
+4.Вивести значення наступних колонок: тема, категорія, назва книги, назва видавництва. Фільтр по темам і категоріям.
+
+SELECT
+    book.title,
+    book_topic.topic,
+    book_category.category,
+    book_edition.edition 
+FROM
+    book
+JOIN book_topic ON book.topic_id = book_topic.id
+JOIN book_category ON book.category_id = book_category.id
+JOIN book_edition ON book.edition_id = book_edition.id
+ORDER BY
+    book.topic_id ASC,
+    book_category.category ASC;
+
+5.Вивести книги видавництва 'BHV', видані після 2000 р
+
+SELECT book.title AS 'Назва',YEAR(book.dateee),
+book_edition.edition
+FROM book
+INNER JOIN book_edition ON book_edition.id = book.edition_id WHERE book_edition.edition LIKE"BHV%" AND YEAR(book.dateee)>=2000;
+
+6.Вивести загальну кількість сторінок по кожній назві категорії. Фільтр по спадаючій кількості сторінок.
+
+SELECT
+    book_category.category,
+    SUM(pages) AS pages
+FROM book 
+JOIN book_category ON book.category_id = book_category.id
+GROUP BY category
+ORDER BY pages DESC;
+
+7.Вивести середню вартість книг по темі 'Використання ПК' і категорії 'Linux'.
+
+SELECT AVG(book.price),
+book_topic.topic,
+book_category.category 
+FROM book
+INNER JOIN book_topic INNER JOIN book_category ON book.topic_id = book_topic.id 
+AND book.category_id = book_category.id WHERE book_topic.topic LIKE '%Використання ПК%' OR book_category.category LIKE '%Linux%' GROUP BY book_topic.topic, book_category.category
+
+8.Вивести всі дані універсального відношення. Використовувати внутрішнє з'єднання, застосовуючи where.
+
+SELECT
+    book.*,
+    book_edition.edition,
+    book_category.category,
+    book_topic.topic
+FROM
+    book, book_edition, book_category, book_topic
+WHERE
+    book.edition_id = book_edition.id AND book.category_id = book_category.id AND book.topic_id = book_topic.id;
+
+9. Вивести всі дані універсального відношення. Використовувати внутрішнє з'єднання, застосовуючи inner join.
+
+SELECT
+    book.*,
+    book_edition.edition,
+    book_category.category,
+    book_topic.topic
+FROM book
+INNER JOIN book_edition ON book.edition_id = book_edition.id
+INNER JOIN book_category ON book.category_id = book_category.id
+INNER JOIN book_topic ON book.topic_id = book_topic.id;
+
+
+10.Вивести всі дані універсального відношення. Використовувати зовнішнє з'єднання, застосовуючи left join / rigth join.
+
+SELECT
+    book.*,
+    book_edition.edition,
+    book_category.category,
+    book_topic.topic
+FROM book
+LEFT JOIN book_edition ON book.edition_id = book_edition.id
+LEFT JOIN book_category ON book.category_id = book_category.id
+LEFT JOIN book_topic ON book.topic_id = book_topic.id;
+
+SELECT
+    book.*,
+    book_edition.edition,
+    book_category.category,
+    book_topic.topic
+FROM book
+RIGHT JOIN book_edition ON book.edition_id = book_edition.id
+RIGHT JOIN book_category ON book.category_id = book_category.id
+RIGHT JOIN book_topic ON book.topic_id = book_topic.id;
+
+11.Вивести пари книг, що мають однакову кількість сторінок. Використовувати само об’єднання і аліаси (self join).
+
+SELECT DISTINCT book1.title,book2.title
+FROM book book1 
+JOIN book book2 ON book1.pages = book2.pages AND book1.edition_id!=book2.edition_id
+
+12. Вивести тріади книг, що мають однакову ціну. Використовувати самооб'єднання і аліаси (self join). ?????????????????????
+
+???????????????????????
+13. Вивести всі книги категорії 'C ++'. Використовувати підзапити (subquery). 
+
+
+???????????????????????
+
+14. Вивести книги видавництва 'BHV', видані після 2000 р Використовувати підзапити (subquery).
+
+SELECT *
+FROM book
+WHERE category_id =(SELECT category_id FROM book_category WHERE book_category.category = 'BHV') AND YEAR(dateee) > 2000;
+
+15. Вивести список видавництв, у яких розмір книг перевищує 400 сторінок. Використовувати пов'язані підзапити (correlated subquery).
+
+SELECT *
+FROM book_edition
+WHERE (SELECT MIN(pages) FROM book WHERE book.edition_id = book_edition.id) >= 400;
+
+16.Вивести список категорій в яких більше 3-х книг. Використовувати пов'язані підзапити (correlated subquery).
+
+SELECT *
+FROM book_category
+WHERE(SELECT COUNT(*) FROM book WHERE book.category_id = book_category.id) > 3
+
+17.Вивести список книг видавництва 'BHV', якщо в списку є хоча б одна книга цього видавництва. Використовувати exists
+
+SELECT *
+FROM book
+WHERE EXISTS(SELECT * FROM book_edition WHERE book_edition.edition = 'BHV' AND book.edition_id = book_edition.id);
+
+18. Вивести список книг видавництва 'BHV', якщо в списку немає жодної книги цього видавництва. Використовувати not exists.
+
+SELECT * 
+FROM book WHERE NOT EXISTS (SELECT * FROM book_edition WHERE book_edition.edition = 'Видавнича група BHV' AND book_edition.id = book.edition_id);
+
+19. Вивести відсортований загальний список назв тем і категорій. Використовувати union.
+
+((SELECT * FROM book_topic) UNION (SELECT * FROM book_category)) ORDER BY topic;
+
+20. Вивести відсортований в зворотному порядку загальний список перших слів, назв книг і категорій що не повторюються. Використовувати union.
+
+SELECT DISTINCT title FROM ((SELECT REGEXP_SUBSTR(TRIM(book.title),'^[^\\s]+') AS title FROM book) 
+UNION ALL(SELECT REGEXP_SUBSTR(TRIM(book_category.category),'^[^\\s]+')  FROM book_category)) book,book_category ORDER BY category DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
