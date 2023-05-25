@@ -1,0 +1,184 @@
+1.Вивести значення наступних колонок: назва книги, ціна, назва видавництва, формат 
+
+DELIMITER //
+CREATE PROCEDURE proc1()
+BEGIN
+    SELECT book.title, price, book_edition.edition_ AS edition_name, format
+    FROM book
+    JOIN book_edition ON book.edition_id = book_edition.id;
+END // DELIMITER ;
+
+CALL proc1(); 
+
+2. Вивести значення наступних колонок: тема, категорія, назва книги, назва видавництва. Фільтр по темам і категоріям
+
+DELIMITER //
+CREATE PROCEDURE proc2()
+BEGIN
+    SELECT book_topic.topic AS topic_title, category.category AS category_title, book.title AS book_title, book_edition.edition AS book_edition_title
+    FROM book 
+    JOIN book_edition ON book.edition_id = book_edition.id
+    JOIN book_topic ON book.topic_id= book_topic.id
+    JOIN book_category ON book.category_id = book_category.id;
+END // DELIMITER ;
+CALL PROC2(); 
+
+3. Вивести книги видавництва 'BHV', видані після 2000 р
+
+CREATE PROCEDURE IF NOT EXISTS  proc3 () 
+SELECT book.* FROM book 
+JOIN book_edition ON book_edition.id = book.edition_id WHERE book_edition.edition LIKE"BHV%" AND YEAR(book.dateee)>=1990;
+
+CALL PROC3(); 
+
+4Вивести загальну кількість сторінок по кожній назві категорії. Фільтр по спадаючій / зростанню кількості сторінок.
+
+
+DELIMITER //
+CREATE PROCEDURE proc4()
+BEGIN
+    SELECT
+    book_category.category,
+    SUM(pages) AS pages
+FROM book 
+JOIN book_category ON book.category_id = book_category.id
+GROUP BY category
+ORDER BY pages ASC;
+END //
+DELIMITER ;
+
+CALL proc4(); 
+
+(()))
+DELIMITER //
+
+CREATE PROCEDURE DATABOOK5_()
+BEGIN
+    SELECT AVG(book.price), book_category.category, book_topictopic.topic
+    FROM book
+    JOIN book_category ON book.category_id = book_category.id
+    JOIN book_topic ON book.topic_id = book_topic.id
+    WHERE book_topic.topic LIKE '%Використання ПК%' AND book_category.category LIKE '%Linux%'
+    GROUP BY book_category.category, book_topic.topic;
+END //
+
+DELIMITER ;
+CALL proc5(); 
+
+6. Вивести всі дані універсального відношення. 
+
+CREATE PROCEDURE IF NOT EXISTS proc6() 
+SELECT book.number,
+book.code,
+book.new,
+book.title,
+book.price,
+book_edition.edition,
+book.pages,
+book.format,
+book.dateee,
+book.circulation, book_topic.topic, book_category.category
+FROM book INNER JOIN book_edition, book_category, book_topic
+where book.edition_id = book_edition.id and book.category_id = book_category.id AND book.topic_id = book_topic.id;
+
+CALL proc6()
+
+7. Вивести пари книг, що мають однакову кількість сторінок
+CREATE PROCEDURE IF NOT EXISTS proc7() 
+SELECT A.title AS one_book, B.title AS two_book from book A, book B 
+WHERE
+A.pages = B.pages GROUP BY A.title, B.pages;
+
+
+8.	Вивести тріади книг, що мають однакову ціну.*/
+
+CREATE PROCEDURE IF NOT EXISTS proc8() 
+SELECT A.title AS book, B.title AS second_book, C.Title AS third_book from book A, book B, book C 
+WHERE A.price = B.price AND C.price = A.price AND C.price = B.price
+GROUP BY A.title, B.title, C.title;
+
+call proc8(); 
+
+9. Вивести всі книги категорії 'C ++'
+
+CREATE PROCEDURE proc9(in categoryy VARCHAR(200))
+SELECT book.title AS 'Назва Книги',
+book.price AS 'Ціна',
+book.pages AS 'Кількість сторінок',
+book.format AS 'Формат',
+book.dateee AS 'Дата видавництва',
+book_edition.edition AS 'Видавництво',
+book_topic.topic AS 'Тема',
+book_category.category AS 'Категорія' 
+FROM book 
+JOIN book_edition ON book.edition_id = book_edition.id 
+JOIN book_topic ON book.topic_id = book_topic.id 
+JOIN book_category ON book.category_id = book_category.id
+WHERE book_category.category = categoryy;
+CALL proc9("C&C++");
+
+10. Вивести список видавництв, у яких розмір книг перевищує 400 сторінок
+
+CREATE PROCEDURE IF NOT EXISTS proc10() 
+SELECT edition 
+FROM book_edition
+WHERE  book_edition.id IN (SELECT edition_id FROM book WHERE pages > 400);
+
+
+11. Вивести список категорій за якими більше 3-х книг.
+CREATE PROCEDURE IF NOT EXISTS proc11() 
+SELECT category 
+FROM book_category 
+WHERE book_category.id  IN (SELECT caterory_id FROM book  GROUP by category_id HAVING COUNT(title) > 3 ) ;
+
+CALL proc11(); 
+
+12. Вивести список книг видавництва 'BHV', якщо в списку є хоча б одна книга цього видавництва.*/
+CREATE PROCEDURE IF NOT EXISTS proc12() 
+SELECT title FROM book 
+WHERE EXISTS (SELECT edition FROM book_edition WHERE book.edition_id = book_edition.id and edition LIKE "%BHV%");
+CALL proc12();
+
+13.	Вивести список книг видавництва 'BHV', якщо в списку немає жодної книги цього видавництва.*/
+CREATE PROCEDURE IF NOT EXISTS proc13() 
+SELECT title FROM book WHERE NOT EXISTS (SELECT edition FROM book_edition WHERE book.edition_id = book_edition.id and edition LIKE "%BHV%");
+call proc13(); 
+
+14.Вивести відсортоване загальний список назв тем і категорій.*/
+CREATE PROCEDURE IF NOT EXISTS prooc14() 
+SELECT book_category.category FROM book_category UNION SELECT book_topic.topic FROM book_topic;
+
+call proc14(); 
+
+15. Вивести відсортований в зворотному порядку загальний список перших слів назв книг і категорій що не повторюються*/
+CREATE PROCEDURE IF NOT EXISTS GetDataBook15() 
+SELECT DISTINCT SUBSTRING_INDEX(book_category.category, " ", 1) AS categoryA  
+FROM book_category UNION SELECT DISTINCT SUBSTRING_INDEX( book.title, " ", 1) 
+FROM book ORDER by categoryA DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
